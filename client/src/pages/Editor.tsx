@@ -28,7 +28,7 @@ const Editor = () => {
         type: 'code_update',
         payload: content,
       }))
-    }, 200)
+    }, 0)
   ).current
 
   useEffect(() => {
