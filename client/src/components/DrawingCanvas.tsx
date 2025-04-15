@@ -13,7 +13,7 @@ export default function DrawingCanvas({ roomId }: Props) {
   const THROTTLE_INTERVAL = 5000 // ms
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8000/ws/draw/${roomId}/`)
+    const socket = new WebSocket(`https://practise-wfzc.onrender.com/ws/draw/${roomId}/`)
     socketRef.current = socket
 
     socket.onopen = () => {

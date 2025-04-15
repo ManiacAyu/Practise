@@ -63,7 +63,7 @@ const Editor = () => {
       })
     }
 
-    const socket = new WebSocket(`ws://localhost:8000/ws/editor/${roomId}/`)
+    const socket = new WebSocket(`https://practise-wfzc.onrender.com/ws/editor/${roomId}/`)
     socketRef.current = socket
 
     socket.onmessage = (event) => {
