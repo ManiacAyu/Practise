@@ -86,7 +86,7 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-MONGO_URI = "mongodb+srv://ayush:satya01012004@cluster0.puabdof.mongodb.net/<your_database_name>?retryWrites=true&w=majority&appName=Cluster0"
+MONGO_URI = "mongodb+srv://ayush:satya01012004@cluster0.puabdof.mongodb.net/CodeCollaborator?retryWrites=true&w=majority&appName=Cluster0"
 
 
 DATABASES = {
