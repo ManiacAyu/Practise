@@ -14,6 +14,7 @@ const Editor = () => {
   const editorRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
   const socketRef = useRef<WebSocket | null>(null)
+  const suppressRef = useRef(false) // NEW: to prevent echo
 
   const [username, setUsername] = useState('')
   const [fontSize, setFontSize] = useState(14)
@@ -40,6 +41,7 @@ const Editor = () => {
     }
     setUsername(name)
 
+    // Setup CodeMirror editor
     if (editorRef.current && !viewRef.current) {
       const state = EditorState.create({
         doc: '',
@@ -49,7 +51,7 @@ const Editor = () => {
           languageCompartment.of(javascript()),
           fontSizeCompartment.of(EditorView.theme({ '&': { fontSize: `${fontSize}px` } })),
           EditorView.updateListener.of((update) => {
-            if (update.docChanged) {
+            if (update.docChanged && !suppressRef.current) {
               const content = update.state.doc.toString()
               throttledSend(content)
             }
@@ -63,7 +65,8 @@ const Editor = () => {
       })
     }
 
-    const socket = new WebSocket(`https://practise-wfzc.onrender.com/ws/editor/${roomId}/`)
+    // Setup WebSocket
+    const socket = new WebSocket(`wss://practise-wfzc.onrender.com/ws/editor/${roomId}/`)
     socketRef.current = socket
 
     socket.onmessage = (event) => {
@@ -71,9 +74,11 @@ const Editor = () => {
       if (data.type === 'code_update' && viewRef.current) {
         const current = viewRef.current.state.doc.toString()
         if (data.payload !== current) {
+          suppressRef.current = true
           viewRef.current.dispatch({
             changes: { from: 0, to: current.length, insert: data.payload },
           })
+          suppressRef.current = false
         }
       }
     }

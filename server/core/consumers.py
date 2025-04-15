@@ -22,13 +22,10 @@ class EditorConsumer(AsyncWebsocketConsumer):
         self.room_id = self.scope["url_route"]["kwargs"]["roomId"]
         self.room_group_name = f"editor_{self.room_id}"
 
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
-        # Send existing code
+        # Send existing code from MongoDB
         collection = get_code_collection()
         doc = collection.find_one({"roomId": self.room_id})
         if doc:
@@ -38,27 +35,24 @@ class EditorConsumer(AsyncWebsocketConsumer):
             }))
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
         if data["type"] == "code_update":
             code = data["payload"]
 
-            # Broadcast code update
+            # Broadcast to other users (except sender)
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     "type": "broadcast_code",
                     "payload": code,
-                    "sender_channel_name" : self.channel_name,
+                    "sender_channel_name": self.channel_name,
                 }
             )
 
-            # Save to Mongo
+            # Save updated code to MongoDB
             collection = get_code_collection()
             collection.update_one(
                 {"roomId": self.room_id},
@@ -67,6 +61,7 @@ class EditorConsumer(AsyncWebsocketConsumer):
             )
 
     async def broadcast_code(self, event):
+        # Don't send back to the sender
         if self.channel_name == event.get("sender_channel_name"):
             return
         await self.send(text_data=json.dumps({
