@@ -71,6 +71,7 @@ class EditorConsumer(AsyncWebsocketConsumer):
 
 
 # ------------------ Draw Consumer ------------------
+# ------------------ Draw Consumer ------------------
 class DrawConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_id = self.scope["url_route"]["kwargs"]["roomId"]
@@ -82,7 +83,7 @@ class DrawConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
 
-        # Send existing drawing
+        # Send existing drawing data
         collection = get_drawing_collection()
         doc = collection.find_one({"roomId": self.room_id})
         if doc and "drawing" in doc:
@@ -99,11 +100,11 @@ class DrawConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
+
         if data["type"] == "draw_update":
             drawing_data = data["payload"]
-            print(drawing_data)
 
-            # Broadcast to others in the room
+            # Broadcast to others in the room (excluding sender)
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
