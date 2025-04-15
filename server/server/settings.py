@@ -25,7 +25,11 @@ SECRET_KEY = "django-insecure--(4_7x4+-iqf4ct5jg&r3pf!95byfn(%rnlxdt%x-lz#&zj2$f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["practise-wfzc.onrender.com","https://practise-wfzc.onrender.com", "https://practise-git-main-maniacayus-projects.vercel.app"]
+ALLOWED_HOSTS = ["practise-wfzc.onrender.com",
+                 "https://practise-wfzc.onrender.com", 
+                 "https://practise-git-main-maniacayus-projects.vercel.app",
+                 "https://code-collaborator-git-main-maniacayus-projects.vercel.app"
+                 ]
 
 
 # Application definition
@@ -54,7 +58,10 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", "https://practise-wfzc.onrender.com", "https://practise-git-main-maniacayus-projects.vercel.app"
+    "http://localhost:5173", 
+    "https://practise-wfzc.onrender.com", 
+    "https://practise-git-main-maniacayus-projects.vercel.app", 
+    "https://code-collaborator-git-main-maniacayus-projects.vercel.app"
 ]
 
 ROOT_URLCONF = "server.urls"
